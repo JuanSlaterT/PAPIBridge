@@ -1,0 +1,11 @@
+main: cloud.docsclient.hotdoctor.plugin.mysqlpapibridge.BridgePlugin
+version: 3.8
+name: UltraMySQLPAPIBridge
+depend: [PlaceholderAPI]
+author: HotDoctor
+api-version: 1.13
+
+commands:
+  MySQLPapiBridge:
+    description: Main command for MySQLPapiBridge
+    aliases: [mpb, pbridge, papibridge]

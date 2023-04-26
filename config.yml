@@ -1,0 +1,52 @@
+configuration:
+  prefix: '&7[&b&lMYSQL &e&lPAPI &9&lBRIDGE&7]'
+  noperm-message: '&cYou are not allowed to use this command!'
+  invalid-command: '&cError! This command does not exist in this plugin!'
+  missing-args: '&cError! The command is not completed and is missing args!'
+  identifier-not-exist: '&cError! The identifier sent does not exists in the Configuration!'
+  updating: '&6Please Wait! This may take a few seconds...'
+  placeholder-updated: '&aSuccess! The identifier has been updated correctly.'
+placeholders:
+  '1':
+    TYPE: 'MySQL'
+    Host: 'localhost'
+    Port: '3306'
+    User: 'root'
+    Password: 'password'
+    Database: 'PAPIBridge'
+    useSSL: true
+    identifiers:
+      'kitbattle_kills':
+        TYPE: download
+        TABLE: 'kills'
+        COLUMN: 'Kills'
+        WHERE: 'player_uuid="%player_uuid%" AND player_name="%player_name%"'
+        cleanUUID: false
+        loading: '&cLoading information...'
+        result-not-found: '0'
+        timer: 160
+      'kitbattle_deads':
+        TYPE: download
+        TABLE: 'deads'
+        loading: '0'
+        timer: 200
+      'kitbattle_coins':
+        TYPE: upload
+        TABLE: 'coins'
+        COLUMN-TO-SAVE-INFO: 'Coins'
+        timer: 180
+      'server_tps':
+        TYPE: single_upload
+        TABLE: 'serverst'
+        COLUMN-TO-SAVE-INFO: 'Value'
+        COLUMN-TO-SAVE-PLACEHOLDER: 'Placeholder'
+        timer: 20
+      'lobby_tps':
+        TYPE: single_download
+        TABLE: 'serverst'
+        COLUMN: 'Value'
+        COLUMN-TO-FIND-PLACEHOLDER: 'Placeholder'
+        PLACEHOLDER: 'server_tps'
+        update_onLoad: true
+        timer: 25
+    
