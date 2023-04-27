@@ -2,6 +2,7 @@
 ![hotdoctor_plugin](https://user-images.githubusercontent.com/20392025/234732022-c5973c27-3288-4eb6-b7f8-5ceae234cf32.png)
 # PAPIBridge Español
 
+![image (4)](https://user-images.githubusercontent.com/20392025/234755754-7065d9ee-d935-4054-8b18-c3d65fcdc2ee.png)
 
 
 ## Tabla de Contenidos
