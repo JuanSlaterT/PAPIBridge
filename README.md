@@ -109,6 +109,10 @@ identifiers:
 
 Si usted está usando una instancia Redis, lamentablemente, debido a que Redis guarda su información en caché, no es compatible.
 
+Finalmente, como ejemplo, debería verse así dentro de la base de datos:
+![mysql](https://user-images.githubusercontent.com/20392025/234730600-4dab8276-4d46-485c-9810-6a94f65858f0.png)
+
+
 
 ## Descargar información de la base de datos
 
@@ -142,6 +146,12 @@ identifiers:
 ```
 
 Si usted está usando una instancia Redis, lamentablemente, debido a que Redis guarda su información en caché, no es compatible.
+
+Finalmente, como ejemplo, debería verse así la información dentro del juego:
+![giphy](https://user-images.githubusercontent.com/20392025/234730665-873ede83-13ad-40aa-9aeb-12067b0bac25.gif)
+
+
+
 
 ## Establecer comunicación entre servidores mediante Redis
 
