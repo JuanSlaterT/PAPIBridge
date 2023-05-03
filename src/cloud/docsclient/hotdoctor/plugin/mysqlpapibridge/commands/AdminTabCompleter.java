@@ -189,11 +189,11 @@ public class AdminTabCompleter implements TabExecutor {
 										Player pal = players.get(random.nextInt(players.size()));
 										update = Bukkit.getPlayer(pal.getUniqueId());
 									}
-									Bukkit.getScheduler().runTaskLater(plugin, () -> {
+									Bukkit.getScheduler().runTaskLater(plugin, () -> 
 										Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
 											id.getDatabridge().run(update);
 										}, 1);
-									}, 1);
+									, 1);
 									plugin.sendMessage(ConfigUtils.PREFIX.getMessage(plugin, plugin.getMainPath())+" "+ConfigUtils.PLACEHOLDER_UPDATED.getMessage(plugin, plugin.getMainPath()), p);
 								}
 							}

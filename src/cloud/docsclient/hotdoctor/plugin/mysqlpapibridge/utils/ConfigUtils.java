@@ -105,23 +105,18 @@ public enum ConfigUtils {
 	}
 	
 	public boolean exists(BridgePlugin plugin, String mainPath) {
-		if(plugin.getConfig().contains(getPath(mainPath))) {
-			return true;
-		}
-		return false;
+		return plugin.getConfig().contains(getPath(mainPath));
 	}
 	
 	public boolean exists2(BridgePlugin plugin, String mainPath) {
-		if(plugin.getConfig().contains(getPath2(mainPath))) {
-			return true;
-		}
-		return false;
+		return plugin.getConfig().contains(getPath2(mainPath));
 	}
 	
 	public String getMessage(BridgePlugin plugin, String mainPath) {
 		if(exists(plugin, mainPath)) {
 			return plugin.getConfig().getString(getPath(mainPath));
-		}if(path2 != null) {
+		}
+		if(path2 != null) {
 			if(exists2(plugin, mainPath)) {
 				return plugin.getConfig().getString(getPath2(mainPath));
 			}

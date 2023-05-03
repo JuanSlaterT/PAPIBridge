@@ -12,7 +12,7 @@ public abstract class DataBridge {
 	private Identifier id;
 	private RAMDatabase database;
 
-	public DataBridge(BridgePlugin plugin, Identifier id) {
+	protected DataBridge(BridgePlugin plugin, Identifier id) {
 		this.setPlugin(plugin);
 		this.setId(id);
 		if (plugin.getIdentifierManager().isDOWNLOAD(id) || plugin.getIdentifierManager().isSINGLE_DOWNLOAD(id) || plugin.getIdentifierManager().isCOMMUNICATION(id)) {

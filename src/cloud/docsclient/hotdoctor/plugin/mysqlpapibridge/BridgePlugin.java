@@ -40,7 +40,7 @@ public class BridgePlugin extends JavaPlugin{
 	
 	public File configyml;
 	public YamlConfiguration configuration;
-	public String rutaConfig;
+	public final String rutaConfig;
 
 	private IdentifierManager identifierManager = new IdentifierManager(this);
 	private String mainPath = "configuration";
@@ -51,6 +51,8 @@ public class BridgePlugin extends JavaPlugin{
 	private List<Redis> savedRedisConections = new ArrayList<>();
 	
 	private static BridgeAPI api;
+	public static final String IDENTIFIERS=".identifiers"
+
 	
 	public static BridgeAPI getAPI() {
 		return api;
@@ -70,13 +72,13 @@ public class BridgePlugin extends JavaPlugin{
 			Identifier idf = null;
 			String dataPath = "placeholders."+id;
 			if(ConfigUtils.DATABASE_TYPE.getMessage(this, dataPath).equalsIgnoreCase("MySQL")) {
-				String Host = ConfigUtils.HOST.getMessage(this, dataPath);
-				String Password = ConfigUtils.PASSWORD.getMessage(this, dataPath);
-				String Database = ConfigUtils.DATABASE.getMessage(this, dataPath);
-				String Port = ConfigUtils.PORT.getMessage(this, dataPath);
-				String User = ConfigUtils.USER.getMessage(this, dataPath);
-				String SSL = ConfigUtils.SSL.getMessage(this, dataPath);
-				MySQL mysql = new MySQL(Host, Database, User, Password, Integer.valueOf(Port), SSL, id);
+				String host = ConfigUtils.HOST.getMessage(this, dataPath);
+				String password = ConfigUtils.PASSWORD.getMessage(this, dataPath);
+				String database = ConfigUtils.DATABASE.getMessage(this, dataPath);
+				String port = ConfigUtils.PORT.getMessage(this, dataPath);
+				String user = ConfigUtils.USER.getMessage(this, dataPath);
+				String ssl = ConfigUtils.SSL.getMessage(this, dataPath);
+				MySQL mysql = new MySQL(host, database, user, password, Integer.valueOf(port), ssl, id);
 				try {
 					mysql.Connect();
 				} catch (SQLException e) {
@@ -84,12 +86,12 @@ public class BridgePlugin extends JavaPlugin{
 					continue;
 				}
 				this.savedConnections.add(mysql);
-				if(this.getConfig().getConfigurationSection(dataPath+".identifiers").getKeys(false).isEmpty()) {
+				if(this.getConfig().getConfigurationSection(dataPath+BridgePlugin.IDENTIFIERS).getKeys(false).isEmpty()) {
 					return;
 				}
-				for(String identifier : this.getConfig().getConfigurationSection(dataPath+".identifiers").getKeys(false)) {
+				for(String identifier : this.getConfig().getConfigurationSection(dataPath+BridgePlugin.IDENTIFIERS).getKeys(false)) {
 					try {
-						idf  = this.getIdentifierManager().addIdentifier(identifier, mysql, dataPath+".identifiers."+identifier);
+						idf  = this.getIdentifierManager().addIdentifier(identifier, mysql, dataPath+BridgePlugin.IDENTIFIERS+identifier);
 						if(this.getIdentifierManager().getIdentifiersEnabled().contains(idf) && this.getIdentifierManager().isValidIdentifier(idf)) {
 							if(this.getIdentifierManager().isUPLOAD(idf)) {
 								String cmd = "CREATE TABLE IF NOT EXISTS "+idf.getTable()+" (player_uuid varchar(36), player_name varchar(16), "+idf.getColumn()+" varchar(32))";
@@ -114,36 +116,33 @@ public class BridgePlugin extends JavaPlugin{
 				}
 				
 			}else if(ConfigUtils.DATABASE_TYPE.getMessage(this, dataPath).equalsIgnoreCase("MongoDB")) {
-				String URI = ConfigUtils.URI.getMessage(this, dataPath);
-				String Database = ConfigUtils.MONGO_DB.getMessage(this, dataPath);
-				MongoDB connection = new MongoDB(URI, Database, id);
+				String uri = ConfigUtils.URI.getMessage(this, dataPath);
+				String database = ConfigUtils.MONGO_DB.getMessage(this, dataPath);
+				MongoDB connection = new MongoDB(uri, database, id);
 				this.savedMongoConnections.add(connection);
-				if(this.getConfig().getConfigurationSection(dataPath+".identifiers").getKeys(false).isEmpty()) {
-					return;
-				}
-				for(String identifier : this.getConfig().getConfigurationSection(dataPath+".identifiers").getKeys(false)) {
-					try {
-						idf  = this.getIdentifierManager().addIdentifier(identifier, connection, dataPath+".identifiers."+identifier);
-					}catch(IdentifierNameAlreadyExists | IdentifiersWithSameCollection e) {
-						
-						e.printStackTrace();
-					}catch (NoneType | GettingType e) {
-						e.printStackTrace();
-						Bukkit.getPluginManager().disablePlugin(this);
-					}
-					
-				}
-			}else if(ConfigUtils.DATABASE_TYPE.getMessage(this, dataPath).equalsIgnoreCase("Redis")) {
-				String Host = ConfigUtils.HOST.getMessage(this, dataPath);
-				String Port = ConfigUtils.PORT.getMessage(this, dataPath);
-				Redis redis = new Redis(Host, Integer.valueOf(Port), id);
-				this.savedRedisConections.add(redis);
-				if(this.getConfig().getConfigurationSection(dataPath+".identifiers").getKeys(false).isEmpty()) {
-					
-				}else {
+				if(!this.getConfig().getConfigurationSection(dataPath+".identifiers").getKeys(false).isEmpty()) {
 					for(String identifier : this.getConfig().getConfigurationSection(dataPath+".identifiers").getKeys(false)) {
 						try {
-							idf  = this.getIdentifierManager().addIdentifier(identifier, redis, dataPath+".identifiers."+identifier);
+							this.getIdentifierManager().addIdentifier(identifier, connection, dataPath+".identifiers."+identifier);
+						}catch(IdentifierNameAlreadyExists | IdentifiersWithSameCollection e) {
+							
+							e.printStackTrace();
+						}catch (NoneType | GettingType e) {
+							e.printStackTrace();
+							Bukkit.getPluginManager().disablePlugin(this);
+						}
+						
+					}
+				}
+			}else if(ConfigUtils.DATABASE_TYPE.getMessage(this, dataPath).equalsIgnoreCase("Redis")) {
+				String host = ConfigUtils.HOST.getMessage(this, dataPath);
+				String port = ConfigUtils.PORT.getMessage(this, dataPath);
+				Redis redis = new Redis(host, Integer.valueOf(port), id);
+				this.savedRedisConections.add(redis);
+				if(!this.getConfig().getConfigurationSection(dataPath+".identifiers").getKeys(false).isEmpty()) {
+					for(String identifier : this.getConfig().getConfigurationSection(dataPath+".identifiers").getKeys(false)) {
+						try {
+							this.getIdentifierManager().addIdentifier(identifier, redis, dataPath+".identifiers."+identifier);
 						}catch(IdentifierNameAlreadyExists e1) {
 							
 							e1.printStackTrace();
@@ -307,12 +306,12 @@ public class BridgePlugin extends JavaPlugin{
         char[] charArray;
         for (int length = (charArray = message.toCharArray()).length, i = 0; i < length; ++i) {
             final char c = charArray[i];
-            if (c == '�') {
+            if ('�'.equals(c)) {
                 previousCode = true;
             }
             else if (previousCode) {
                 previousCode = false;
-                isBold = (c == 'l' || c == 'L');
+                isBold = ('l'.equals(c) || 'L'.equals(c));
             }
             else {
                 final DefaultFontInfo dFI = DefaultFontInfo.getDefaultFontInfo(c);
@@ -330,7 +329,6 @@ public class BridgePlugin extends JavaPlugin{
             compensated += spaceLength;
         }
         player.sendMessage(String.valueOf(sb.toString()) + message);
-        return;
     }
     
     public MetricsLite getMetrics() {
