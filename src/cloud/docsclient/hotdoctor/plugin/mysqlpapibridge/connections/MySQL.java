@@ -17,34 +17,31 @@ public class MySQL {
 	private HikariDataSource hikari;
 	private Connection conn;
 	private String pathID;
+	public static final String PLACEHOLDER="placeholders.";
 	
 	
-	public MySQL(String Host, String Database, String User, String Password, Integer Port, String SSL, String pathID) {
+	public MySQL(String host, String dataBase, String user, String password, Integer port, String ssl, String pathID) {
 		String legacy = "com.mysql.jdbc.jdbc2.optional.MysqlDataSource";
 		String updated = "com.mysql.cj.jdbc.MysqlDataSource";
 		String toUse;
-		if(isPresent(legacy)) {
-			toUse = legacy;
-		}else {
-			toUse = updated;
-		}
+		toUse= isPresent(legacy)?legacy:updated;
 		hikari = new HikariDataSource();
 		hikari.setDataSourceClassName(toUse);
-		hikari.addDataSourceProperty("serverName", Host);
-        hikari.addDataSourceProperty("port", Port);
-        hikari.addDataSourceProperty("databaseName", Database);
-        hikari.addDataSourceProperty("user", User);
-        hikari.addDataSourceProperty("password", Password);
-        hikari.addDataSourceProperty("useSSL", SSL);
+		hikari.addDataSourceProperty("serverName", host);
+        hikari.addDataSourceProperty("port", port);
+        hikari.addDataSourceProperty("databaseName", dataBase);
+        hikari.addDataSourceProperty("user", user);
+        hikari.addDataSourceProperty("password", password);
+        hikari.addDataSourceProperty("useSSL", ssl);
         hikari.addDataSourceProperty("autoReconnect", true);
         hikari.setMaximumPoolSize(30);
         hikari.setConnectionTimeout(300000);
         hikari.setMaxLifetime(1800000);
-		if(ConfigUtils.ENCODING.exists(BridgeAPI.getPlugin(), "placeholders."+pathID)) {
-			hikari.addDataSourceProperty("characterEncoding", ConfigUtils.ENCODING.getMessage(BridgeAPI.getPlugin(), "placeholders."+pathID));
+		if(ConfigUtils.ENCODING.exists(BridgeAPI.getPlugin(), MySQL.PLACEHOLDER+pathID)) {
+			hikari.addDataSourceProperty("characterEncoding", ConfigUtils.ENCODING.getMessage(BridgeAPI.getPlugin(), MySQL.PLACEHOLDER+pathID));
 		}
-		if(ConfigUtils.UNICODE.exists(BridgeAPI.getPlugin(), "placeholders."+pathID)) {
-			hikari.addDataSourceProperty("useUnicode", ConfigUtils.UNICODE.getMessage(BridgeAPI.getPlugin(), "placeholders."+pathID));
+		if(ConfigUtils.UNICODE.exists(BridgeAPI.getPlugin(), MySQL.PLACEHOLDER+pathID)) {
+			hikari.addDataSourceProperty("useUnicode", ConfigUtils.UNICODE.getMessage(BridgeAPI.getPlugin(), MySQL.PLACEHOLDER+pathID));
 		}
         this.pathID = pathID;
 	}
@@ -86,8 +83,7 @@ public class MySQL {
 	
 	public ResultSet executeQuery(String string) throws SQLException {
 		Statement st = connection().createStatement();
-		ResultSet rs = st.executeQuery(string);
-		return rs;
+		return st.executeQuery(string);
 	}
 	public void executeUpdate(String string) throws SQLException {
 		Statement st = connection().createStatement();
@@ -95,11 +91,12 @@ public class MySQL {
 	}
 	
 	public boolean isConnected() throws SQLException {
+		boolean ret = true;
 		if(conn.isClosed()) {
-			return false;
-		}else {
-			return true;
+			ret =false;
+			return ret;
 		}
+		return ret;
 	}
 	
 	
